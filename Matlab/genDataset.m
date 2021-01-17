@@ -53,7 +53,7 @@ if (clientID>-1)
         
         writematrix(theta,inFile,'WriteMode','append');
         writematrix(ee_pos_ori,outFile,'WriteMode','append');
-        pause(1);
+        %pause(1);
     end
     
     
