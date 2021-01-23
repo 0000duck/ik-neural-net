@@ -5,7 +5,7 @@ disp('Program started');
 dof=6; %degrees of freedom
 theta=zeros(1,dof); %joint angles
 jh=zeros(1,dof); %CoppeliaSim joint handles
-iterations=1000; %number of code iterations
+iterations=50000; %number of code iterations
 
 inFile='..\Dataset\UR10\joint_values.xlsx'; % input file
 outFile='..\Dataset\UR10\ee_pos_ori.xlsx'; % output file
