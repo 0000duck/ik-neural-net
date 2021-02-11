@@ -1,11 +1,15 @@
 
 import numpy as np
 import random
+import numba
+#from numba import jit, cuda
+from numba import cuda
 
 # The centerpiece is a Network class, which we use to represent a neural network
 # to call: net = Network([2, 3, 1])
-class Network(object):
 
+class Network(object):
+    #@numba.jit
     def __init__(self, sizes):
         """The list ``sizes`` contains the number of neurons in the
         respective layers of the network.  For example, if the list
@@ -23,12 +27,14 @@ class Network(object):
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
 
+    #@numba.jit
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
         for b, w in zip(self.biases, self.weights):
             a = sigmoid(np.dot(w, a)+b)
         return a
 
+    #@numba.jit
     def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
         """Train the neural network using mini -batch stochastic gradient descent. 
         
@@ -66,6 +72,7 @@ class Network(object):
             else:
                 print("Epoch {} complete".format(j))
 
+    #@numba.jit
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
         gradient descent using backpropagation to a single mini batch.
@@ -82,6 +89,7 @@ class Network(object):
         self.biases = [b-(eta/len(mini_batch))*nb
                        for b, nb in zip(self.biases, nabla_b)]
 
+    #@numba.jit
     def backprop(self, x, y):
         """Return a tuple ``(nabla_b, nabla_w)`` representing the
         gradient for the cost function C_x.  ``nabla_b`` and
@@ -117,6 +125,7 @@ class Network(object):
             nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
         return (nabla_b, nabla_w)
 
+    #@numba.jit
     def evaluate(self, test_data):
         """Return the number of test inputs for which the neural
         network outputs the correct result. Note that the neural
@@ -126,6 +135,7 @@ class Network(object):
                         for (x, y) in test_data]
         return sum(int(x == y) for (x, y) in test_results)
 
+    #@numba.jit
     def cost_derivative(self , output_activations , y):
         """Return the vector of partial derivatives \partial C_x /
         \partial a for the output activations."""
@@ -134,9 +144,11 @@ class Network(object):
 
 
 # Other functions
+#@numba.jit
 def sigmoid(z):
     return 1.0/(1.0+np.exp(-z))
 
+#@numba.jit
 def sigmoid_prime(z):
     """Derivative of the sigmoid function."""
     return sigmoid(z)*(1-sigmoid(z))
