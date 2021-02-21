@@ -11,7 +11,7 @@ training_data, validation_data, test_data = InvKin_loader.load_data_wrapper()
 
 """ Initialize the network """
 # test1
-net = network.Network([6, 0, 6])
+net = network.Network([6, 6, 6])
 
 
 """ Train the network using Stochastic Gradient Descent """
