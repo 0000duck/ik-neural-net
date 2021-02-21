@@ -23,5 +23,3 @@ net = network.Network([784, 100, 10])
 # SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None)
 #@numba.jit
 net.SGD(training_data , 30, 10, 3.0, test_data=test_data)
-
-

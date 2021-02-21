@@ -1,9 +1,9 @@
 
 import numpy as np
 import random
-import numba
+#import numba
 #from numba import jit, cuda
-from numba import cuda
+#from numba import cuda
 
 # The centerpiece is a Network class, which we use to represent a neural network
 # to call: net = Network([2, 3, 1])
@@ -54,6 +54,7 @@ class Network(object):
         Then for each mini_batch we apply a single step of gradient descent. This is done by the 
         code self.update_mini_batch(mini_batch, eta),
         """
+        #epochs, mini_batch_size, eta =  30, 10, 3.0 
         training_data = list(training_data)
         n = len(training_data)
 
@@ -79,6 +80,7 @@ class Network(object):
         The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
         is the learning rate."""
         nabla_b = [np.zeros(b.shape) for b in self.biases]
+        
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
             delta_nabla_b, delta_nabla_w = self.backprop(x, y) # most of the work is done here
