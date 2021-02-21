@@ -23,9 +23,9 @@ training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 training_data = list(training_data)
 
 #Input
-#import pandas as pd 
-#ee_pos_ori = pd.read_csv(r'..\Dataset\UR10\ee_pos_ori.csv', sep = ';')
-#joint_values = pd.read_csv(r'..\Dataset\UR10\joint_values.csv', sep = ';')
+import pandas as pd 
+ee_pos_ori = pd.read_csv(r'..\Dataset\UR10\ee_pos_ori.csv', sep = ';')
+joint_values = pd.read_csv(r'..\Dataset\UR10\joint_values.csv', sep = ';')
 
 # ---------------------
 # - network.py example:
