@@ -1,38 +1,54 @@
-"""
-    Testing code for different neural network configurations.
-    Adapted for Python 3.5.2
-
-    Usage in shell:
-        python3.5 test.py
-
-    Network (network.py and network2.py) parameters:
-        2nd param is epochs count
-        3rd param is batch size
-        4th param is learning rate (eta)
-
-    Author:
-        Michał Dobrzański, 2016
-        dobrzanski.michal.daniel@gmail.com
-"""
-
-# ----------------------
-# - read the input data:
-
-import mnist_loader
-training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
-training_data = list(training_data)
-
 #Input
 import pandas as pd 
-ee_pos_ori = pd.read_csv(r'..\Dataset\UR10\ee_pos_ori.csv', sep = ';')
-joint_values = pd.read_csv(r'..\Dataset\UR10\joint_values.csv', sep = ';')
+import math
+import numpy as np
+ee_pos_ori = pd.read_csv(r'Dataset\UR10\ee_pos_ori.csv', sep = ';')
+joint_values = pd.read_csv(r'Dataset\UR10\joint_values.csv', sep = ';')
+# df_1 = ee_pos_ori.copy()
+# df_2 = joint_values.copy()
+
+def vectorize_it (df): 
+    x = [np.reshape(x, (6, 1)) for x in df['x']] #Criar relação 1 para 1 entre entras e saídas em formato array
+    y = [np.reshape(x, (6, 1)) for x in df['y']]
+    final = zip(x, y) #Para replicar outro método
+    return final
+
+def list_it (df_1, df_2):
+    df_1['join'] = df_1.index # Criar ligação entre os 2 ficheiro pela linha
+    df_2['join'] = df_2.index
+    
+    df_new = df_2.merge(df_1, on = ['join'], how = 'inner') # Juntar os 2 data frames
+    
+    df_new['x'] = df_new.apply(lambda x: [x.xe, x.ye, x.ze, x.alpha, x.beta, x.gamma], axis = 1) # Juntar as 6 variaveis numas lista
+    df_new['y'] = df_new.apply(lambda x: [x.theta1, x.theta2, x.theta3, x.theta4, x.theta5, x.theta6], axis = 1)
+    
+    size = len(df_new) # Tamanho total para a seguir dividir
+    
+    train = df_new.iloc[0:math.ceil(0.7 * size)]
+    validation = df_new.iloc[math.ceil(0.7 * size) : math.ceil(0.9 * size)]
+    test = df_new.iloc[math.ceil(0.9 * size) : size]
+
+    train_data = vectorize_it(train) #Função acima
+    validation_data = vectorize_it(validation)
+    test_data = vectorize_it(test)
+    return train_data, validation_data, test_data
+
+training_data, validation_data, test_data = list_it(ee_pos_ori, joint_values)
 
 # ---------------------
 # - network.py example:
+import sys
+sys.path.insert(0, './Python/JoaoCunha') # Para mudar para a pasta onde estão os ficheiros - Estava a trabalhar na pasta ik-neural-net
 import network
 
+net = network.Network([6, 30, 6])
+net.SGD(training_data, 100, 10, 3.0, test_data=test_data)
+
+#New to inverse cinematic
 net = network.Network([784, 30, 10])
 net.SGD(training_data, 100, 10, 3.0, test_data=test_data)
+
+
 
 # ----------------------
 # - network2.py example:
